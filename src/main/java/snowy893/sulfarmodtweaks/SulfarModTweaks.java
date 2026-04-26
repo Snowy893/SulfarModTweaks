@@ -1,12 +1,14 @@
 package snowy893.sulfarmodtweaks;
 
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.Minecraft;
-import net.minecraft.world.item.CreativeModeTabs;
+import net.cursedwarrior.sulfarmod.init.SulfarModModItems;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.furnace.FurnaceFuelBurnTimeEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -32,23 +34,26 @@ public class SulfarModTweaks {
         context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event) {
-    
-    }
+    private void commonSetup(final FMLCommonSetupEvent event) {}
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
-    public void onServerStarting(ServerStartingEvent event) {
-    
-    }
+    public void onServerStarting(ServerStartingEvent event) {}
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
-        public static void onClientSetup(FMLClientSetupEvent event)
-        {
-        
+        public static void onClientSetup(FMLClientSetupEvent event) {}
+    }
+    
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void furnaceFuelBurnTimeEvent(FurnaceFuelBurnTimeEvent event) {
+        Item item = event.getItemStack().getItem();
+        if (item == SulfarModModItems.SULFAR.get()) {
+            event.setBurnTime(Config.burnTime);
+        } else if (item == SulfarModModItems.SULFAR_BLOCK.get()) {
+            event.setBurnTime(Config.blockBurnTime);
         }
     }
 }
